@@ -1,0 +1,35 @@
+//
+//  AppTests.swift
+//
+//
+//  Created by Pat Butler on 2022-03-03.
+//
+
+@testable import App
+import XCTVapor
+
+final class AppTests: AppTestCase {
+
+	func testHomePage() throws {
+		let app = try createTestApp()
+		 defer { app.shutdown() }
+	
+		 try app.testable(method: .inMemory).test(.GET, "") { res in
+			  XCTAssertEqual(res.status, .ok)
+			  
+			  let contentType = try XCTUnwrap(res.headers.contentType)
+			  XCTAssertEqual(contentType, .html)
+			  XCTAssertTrue(res.body.string.contains("Home"))
+		 }
+	}
+
+	func testAuth() throws {
+		let app = try createTestApp()
+		defer { app.shutdown() }
+		
+		let email = "root@localhost.com"
+		let token = try authenticate(.init(email: email, password: "ChangeMe2"), app)
+		XCTAssertEqual(token.user.email, email)
+	}
+	
+}

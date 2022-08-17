@@ -1,0 +1,21 @@
+//
+//  Application+AsyncHooks.swift
+//  
+//
+//  Created by Pat Butler on 2022-03-04.
+//
+
+import Vapor
+
+extension Application {
+
+	 func invokeAsync<ReturnType>(_ name: String, args: HookArguments = [:]) async throws -> ReturnType? {
+		  let ctxArgs = args.merging(["app": self]) { (_, new) in new }
+		  return try await hooks.invokeAsync(name, args: ctxArgs)
+	 }
+
+	 func invokeAllAsync<ReturnType>(_ name: String, args: HookArguments = [:]) async throws -> [ReturnType] {
+		  let ctxArgs = args.merging(["app": self]) { (_, new) in new }
+		  return try await hooks.invokeAllAsync(name, args: ctxArgs)
+	 }
+}

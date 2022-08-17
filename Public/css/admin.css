@@ -1,0 +1,12 @@
+/* custom CSS for the admin section goes here */
+
+tr {
+	grid-template-columns: 4rem 1fr 4rem;
+	column-gap: 1rem;
+}
+td img {
+	display: block;
+}
+th {
+	text-align: left
+}

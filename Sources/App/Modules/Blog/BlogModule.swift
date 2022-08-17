@@ -1,0 +1,30 @@
+//
+//  BlogModule.swift
+//  
+//
+//  Created by Pat Butler on 2022-02-22.
+//
+
+import Vapor
+
+struct BlogModule: ModuleInterface {
+	
+	let router = BlogRouter()
+	
+	func boot(_ app: Application) throws {
+		app.migrations.add(BlogMigrations.v1())
+		app.migrations.add(BlogMigrations.seed())
+		
+		app.hooks.register("admin-widget", use: adminWidgetHook)
+		app.hooks.register("admin-routes", use: router.adminRoutesHook)
+		app.hooks.register("api-routes", use: router.apiRoutesHook)
+		
+		app.hooks.registerAsync("response", use: router.responseHook)
+		
+		try router.boot(routes: app.routes)
+	}
+	
+	func adminWidgetHook(_ args: HookArguments) -> TemplateRepresentable {
+		BlogAdminWidgetTemplate()
+	}
+}
